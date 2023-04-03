@@ -180,4 +180,4 @@ for i in range(75):
     table_hdu = fits.BinTableHDU.from_columns(cols)
     hdul = fits.HDUList([empty_primary, table_hdu])
     hdul.writeto('/home/lorenzong/Desktop/Catalogs/new_cat/%s.fits'%ind_snap, overwrite=True)
-    print('RAM memory % used:', psutil.virtual_memory()[2])
+    print('RAM memory used:', psutil.virtual_memory()[2])
