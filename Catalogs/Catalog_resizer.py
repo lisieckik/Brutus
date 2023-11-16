@@ -74,64 +74,68 @@ def intput_cat(event):
         filename += '/'
         # Depending on the widget used, different result
         if event.widget == button1_explore:
-            file_list = os.listdir(filename)
-            simulations = {}
-            for i in file_list:
-                ext = i.split('.')[-1]
-                name = i.split('.')[0]
-                if ext == 'hdf5':
-                    name = name.split('_')[0]
-                    if name == 'm100n1024':
-                        try: simulations['m100n1024']
-                        except:
-                            simulations['m100n1024'] = 'Flagship run (100 Mpc/h box, 2x1024^3 particles)'
-                    elif name == 'm50n512':
-                        try: simulations['m50n512']
-                        except:
-                            simulations['m50n512'] = 'One of feedback variants (50 Mpc/h box, 2x512^3 particles)'
-                    elif name == 'm25n512':
-                        try: simulations['m25n512']
-                        except:
-                            simulations['m25n512'] = 'High-resolution (25 Mpc/h box, 2x512^3 particles)'
-
-            if len(simulations.keys()) != 1:
-                global newWindow_sim
-                newWindow_sim = tk.Toplevel(root)
-                newWindow_sim.title("Found simulation runs")
-                newWindow_sim.geometry("300x450")
-                if len(simulations.keys()) == 0:
-                    global inp_cats_name
-                    war = tk.Label(newWindow_sim,
-                                   text='There are no simulation files!\nDid you change the names?\nHow did you call them (what is the prefix)?')
-                    war.grid(row=0, column=0, sticky='n', pady=10,padx = 75)
-                    inp_cats_name = tk.Entry(newWindow_sim, width=42)
-                    inp_cats_name.grid(row=1, column=0, sticky='ew', padx=20, pady=2, columnspan=7)
-                    war2 = tk.Label(newWindow_sim,
-                                   text='For example, if you changed the names to\n\"high-res-simba-001.hdf5\"'
-                                        '\n\"high-res-simba-052.hdf5\"\n\"high-res-simba-133.hdf5\"'
-                                        '\nThen put into the box\nhigh-res-simba-')
-                    war2.grid(row=2, column=0, sticky='n', pady=10,padx = 75)
-                    button_simulation_type = tk.Button(newWindow_sim, text='Check', command=lambda arg=filename: look_for_hdf5_file(arg))
-                    button_simulation_type.grid(row=3, column = 0)
-                if len(simulations.keys()) > 1:
-                    war = tk.Label(newWindow_sim,
-                                   text='There is more than one run!\n Which one you want to use?')
-                    war.grid(row=0, column=0, sticky='n', pady=10, padx=75, columnspan=2)
-                    for i in range(len(simulations.keys())):
-                        b = tk.Button(newWindow_sim, text=simulations[list(simulations.keys())[i]],
-                                      command=lambda arg=list(simulations.keys())[i]: simulation_runs_handler(arg))
-                        b.grid(row = 1+i, column=0, pady=10)
-            else:
-                simulation_runs_handler(list(simulations.keys())[0])
-
-
-            input_cats_box.delete(0, tk.END)
-            input_cats_box.insert(0, filename)
+            simulation_type(filename)
 
         elif event.widget == button_out:
             out_cats_text.delete(0, tk.END)
             out_cats_text.insert(0, filename)
     return 'break'
+
+def simulation_type(filename):
+    file_list = os.listdir(filename)
+    simulations = {}
+    for i in file_list:
+        ext = i.split('.')[-1]
+        name = i.split('.')[0]
+        if ext == 'hdf5':
+            name = name.split('_')[0]
+            if name == 'm100n1024':
+                try: simulations['m100n1024']
+                except:
+                    simulations['m100n1024'] = 'Flagship run (100 Mpc/h box, 2x1024^3 particles)'
+            elif name == 'm50n512':
+                try: simulations['m50n512']
+                except:
+                    simulations['m50n512'] = 'One of feedback variants (50 Mpc/h box, 2x512^3 particles)'
+            elif name == 'm25n512':
+                try: simulations['m25n512']
+                except:
+                    simulations['m25n512'] = 'High-resolution (25 Mpc/h box, 2x512^3 particles)'
+
+    if len(simulations.keys()) != 1:
+        global newWindow_sim
+        newWindow_sim = tk.Toplevel(root)
+        newWindow_sim.title("Found simulation runs")
+        newWindow_sim.geometry("300x450")
+        if len(simulations.keys()) == 0:
+            global inp_cats_name
+            war = tk.Label(newWindow_sim,
+                           text='There are no simulation files!\nDid you change the names?\nHow did you call them (what is the prefix)?')
+            war.grid(row=0, column=0, sticky='n', pady=10,padx = 75)
+            inp_cats_name = tk.Entry(newWindow_sim, width=42)
+            inp_cats_name.grid(row=1, column=0, sticky='ew', padx=20, pady=2, columnspan=7)
+            war2 = tk.Label(newWindow_sim,
+                           text='For example, if you changed the names to\n\"high-res-simba-001.hdf5\"'
+                                '\n\"high-res-simba-052.hdf5\"\n\"high-res-simba-133.hdf5\"'
+                                '\nThen put into the box\nhigh-res-simba-')
+            war2.grid(row=2, column=0, sticky='n', pady=10,padx = 75)
+            button_simulation_type = tk.Button(newWindow_sim, text='Check', command=lambda arg=filename: look_for_hdf5_file(arg))
+            button_simulation_type.grid(row=3, column = 0)
+        if len(simulations.keys()) > 1:
+            war = tk.Label(newWindow_sim,
+                           text='There is more than one run!\n Which one you want to use?')
+            war.grid(row=0, column=0, sticky='n', pady=10, padx=75, columnspan=2)
+            for i in range(len(simulations.keys())):
+                b = tk.Button(newWindow_sim, text=simulations[list(simulations.keys())[i]],
+                              command=lambda arg=list(simulations.keys())[i]: simulation_runs_handler(arg))
+                b.grid(row = 1+i, column=0, pady=10)
+    else:
+        simulation_runs_handler(list(simulations.keys())[0])
+
+
+    input_cats_box.delete(0, tk.END)
+    input_cats_box.insert(0, filename)
+
 def look_for_hdf5_file(filename):
     inp = inp_cats_name.get()
     file_list = os.listdir(filename)
@@ -149,7 +153,9 @@ def look_for_hdf5_file(filename):
 def simulation_runs_handler(i):
     global simulation_type
     simulation_type = i + '_'
-    newWindow_sim.destroy()
+    try:
+        newWindow_sim.destroy()
+    except:pass
 
 def recover(oldone):
     """
@@ -174,6 +180,7 @@ def recover(oldone):
             except:
                 pass
             input_cats_box.insert('end', oldone[0][0:-1])
+            simulation_type(input_cats_box.get())
 
             try:
                 para_box.delete("1.0", "end")
@@ -718,10 +725,7 @@ def real_brutus(SIMBA_catalogs_path,
     del name, attribute, c, w, columns, halo_index
     if progenitor_track:
         if interesting_ids != -1:
-            if redshift_range[0]:
-                names.append('descendant_galaxy_at_z_%.3f' % redshift_range[1])
-            elif not redshift_range[0]:
-                names.append('descendant_galaxy_at_z_%.3f' % z_snap[snapshot_range[1]])
+            names.append('descendant_galaxy_at_z_%.3f' % z_snap[snapshot_range][1])
         else:
             names.append('progenitor_galaxy_at_previous_snapshot')
     number_of_columns = len(names)
