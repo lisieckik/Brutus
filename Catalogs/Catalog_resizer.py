@@ -669,7 +669,7 @@ def real_brutus(SIMBA_catalogs_path,
     ### load IDs of galaxies at the lowest redshift on interest
     if interesting_ids != -1:
         interesting_ids = open(interesting_ids, 'r').read().split()
-        slices = np.array(interesting_ids, dtype=int)
+        slices = np.array(interesting_ids, dtype=float).astype(int)
         ind_valid = np.where(slices >= 0)[0]
         slices = slices[ind_valid]
         del ind_valid
